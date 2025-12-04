@@ -1,0 +1,808 @@
+<!doctype html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>清单详情</title>
+        <style>
+            :root {
+                --bg-dark: #020617;
+                --card-bg: #0f172a;
+                --card-bg-secondary: rgba(15, 23, 42, 0.6);
+                --input-bg: rgba(30, 41, 59, 0.5);
+                --card-border: #1e293b;
+                --primary: #38bdf8;
+                --secondary: #6366f1;
+                --accent: #10b981;
+                --text-main: #f8fafc;
+                --text-muted: #94a3b8;
+                --danger: #ef4444;
+                --delete-btn-bg: rgba(239, 68, 68, 0.1);
+                --hover-bg: rgba(56, 189, 248, 0.05);
+                --shadow: rgba(0, 0, 0, 0.2);
+            }
+
+            [data-theme="light"] {
+                --bg-dark: #e0f2fe;
+                --card-bg: #ffffff;
+                --card-bg-secondary: rgba(255, 255, 255, 0.95);
+                --input-bg: #f0f9ff;
+                --card-border: #bae6fd;
+                --primary: #0284c7;
+                --secondary: #0ea5e9;
+                --accent: #06b6d4;
+                --text-main: #0c4a6e;
+                --text-muted: #475569;
+                --danger: #dc2626;
+                --delete-btn-bg: rgba(220, 38, 38, 0.1);
+                --hover-bg: rgba(2, 132, 199, 0.05);
+                --shadow: rgba(2, 132, 199, 0.15);
+            }
+
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+
+            body {
+                font-family:
+                    "Inter",
+                    -apple-system,
+                    sans-serif;
+                background-color: var(--bg-dark);
+                color: var(--text-main);
+                line-height: 1.5;
+                padding: 20px;
+                min-height: 100vh;
+                transition: background-color 0.3s ease, color 0.3s ease;
+            }
+
+            .container {
+                max-width: 900px;
+                margin: 0 auto;
+            }
+
+            /* Header */
+            .header {
+                margin-bottom: 40px;
+                padding-top: 20px;
+            }
+
+            .back-btn {
+                background: var(--input-bg);
+                border: 1px solid var(--card-border);
+                color: var(--text-main);
+                padding: 10px 20px;
+                border-radius: 10px;
+                cursor: pointer;
+                font-size: 1rem;
+                transition: all 0.2s ease;
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                margin-bottom: 20px;
+            }
+
+            .back-btn:hover {
+                background: var(--card-bg-secondary);
+                border-color: var(--primary);
+                transform: translateX(-2px);
+            }
+
+            .list-info {
+                background: var(--card-bg-secondary);
+                border: 1px solid var(--card-border);
+                border-radius: 16px;
+                padding: 30px;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .list-info::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 4px;
+                background: linear-gradient(
+                    90deg,
+                    var(--primary),
+                    var(--secondary)
+                );
+            }
+
+            .list-title {
+                font-size: 2rem;
+                font-weight: 800;
+                margin-bottom: 8px;
+                background: linear-gradient(
+                    to right,
+                    var(--primary),
+                    var(--secondary)
+                );
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+
+            .list-subtitle {
+                font-size: 1.1rem;
+                color: var(--text-muted);
+                margin-bottom: 20px;
+            }
+
+            .list-stats {
+                display: flex;
+                gap: 20px;
+                font-size: 0.95rem;
+                color: var(--text-muted);
+            }
+
+            /* Add Section */
+            .add-section {
+                background: var(--card-bg-secondary);
+                border: 1px solid var(--card-border);
+                border-radius: 16px;
+                padding: 25px;
+                margin: 30px 0;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .add-section::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 3px;
+                background: linear-gradient(
+                    90deg,
+                    var(--accent),
+                    var(--primary)
+                );
+            }
+
+            .input-group {
+                display: flex;
+                gap: 10px;
+            }
+
+            input[type="text"] {
+                flex: 1;
+                background: var(--input-bg);
+                border: 1px solid var(--card-border);
+                border-radius: 10px;
+                padding: 14px 18px;
+                color: var(--text-main);
+                font-size: 1rem;
+                transition: all 0.3s ease;
+            }
+
+            input[type="text"]:focus {
+                outline: none;
+                border-color: var(--primary);
+                background: var(--card-bg);
+            }
+
+            .btn {
+                background: linear-gradient(
+                    135deg,
+                    var(--primary),
+                    var(--secondary)
+                );
+                color: white;
+                border: none;
+                border-radius: 10px;
+                padding: 14px 28px;
+                font-size: 1rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                white-space: nowrap;
+            }
+
+            .btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 25px -10px rgba(56, 189, 248, 0.5);
+            }
+
+            /* Items */
+            .items-section {
+                background: var(--card-bg-secondary);
+                border: 1px solid var(--card-border);
+                border-radius: 16px;
+                padding: 30px;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .items-section::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 4px;
+                background: linear-gradient(
+                    90deg,
+                    var(--secondary),
+                    var(--primary)
+                );
+            }
+
+            .section-title {
+                font-size: 1.3rem;
+                font-weight: 700;
+                margin-bottom: 20px;
+                color: var(--text-main);
+            }
+
+            .tech-list {
+                list-style: none;
+            }
+
+            .tech-item {
+                display: flex;
+                align-items: center;
+                padding: 16px 0;
+                border-bottom: 1px solid var(--card-border);
+                transition: all 0.2s ease;
+                animation: slideIn 0.3s ease;
+                cursor: move;
+            }
+
+            .tech-item.dragging {
+                opacity: 0.5;
+                background: var(--hover-bg);
+                border-radius: 8px;
+            }
+
+            .tech-item.drag-over {
+                border-top: 3px solid var(--primary);
+                padding-top: 13px;
+            }
+
+            @keyframes slideIn {
+                from {
+                    opacity: 0;
+                    transform: translateX(-10px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+            }
+
+            .tech-item:last-child {
+                border-bottom: none;
+            }
+
+            .tech-item:hover {
+                background: var(--hover-bg);
+                padding-left: 10px;
+                margin-left: -10px;
+                padding-right: 10px;
+                margin-right: -10px;
+                border-radius: 8px;
+            }
+
+            .tech-item.completed .tech-name {
+                text-decoration: line-through;
+                color: var(--text-muted);
+                opacity: 0.6;
+            }
+
+            /* Checkbox */
+            .checkbox-wrapper {
+                position: relative;
+                margin-right: 15px;
+            }
+
+            .checkbox {
+                appearance: none;
+                width: 24px;
+                height: 24px;
+                border: 2px solid var(--card-border);
+                border-radius: 6px;
+                cursor: pointer;
+                position: relative;
+                transition: all 0.2s ease;
+                flex-shrink: 0;
+            }
+
+            .checkbox:hover {
+                border-color: var(--primary);
+            }
+
+            .checkbox:checked {
+                background: linear-gradient(
+                    135deg,
+                    var(--accent),
+                    var(--primary)
+                );
+                border-color: var(--accent);
+            }
+
+            .checkbox:checked::after {
+                content: "✓";
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                color: white;
+                font-size: 14px;
+                font-weight: bold;
+            }
+
+            .tech-name {
+                flex: 1;
+                font-weight: 600;
+                color: var(--text-main);
+                font-size: 1.05rem;
+                cursor: pointer;
+                padding: 4px 8px;
+                border-radius: 4px;
+                transition: background 0.2s ease;
+                user-select: none;
+            }
+
+            .tech-name:hover {
+                background: var(--hover-bg);
+            }
+
+            .tech-name.editing {
+                display: none;
+            }
+
+            .edit-input {
+                flex: 1;
+                background: var(--input-bg);
+                border: 2px solid var(--primary);
+                border-radius: 6px;
+                padding: 8px 12px;
+                color: var(--text-main);
+                font-size: 1.05rem;
+                font-weight: 600;
+                outline: none;
+            }
+
+            .drag-handle {
+                margin-right: 8px;
+                color: var(--text-muted);
+                font-size: 1.2rem;
+                cursor: grab;
+                user-select: none;
+            }
+
+            .tech-item.dragging .drag-handle {
+                cursor: grabbing;
+            }
+
+            .delete-item-btn {
+                background: var(--delete-btn-bg);
+                color: var(--danger);
+                border: none;
+                padding: 6px 12px;
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 0.875rem;
+                transition: all 0.2s ease;
+                opacity: 0;
+            }
+
+            .tech-item:hover .delete-item-btn {
+                opacity: 1;
+            }
+
+            .delete-item-btn:hover {
+                background: var(--danger);
+                color: white;
+            }
+
+            .empty-state {
+                text-align: center;
+                padding: 60px 20px;
+                color: var(--text-muted);
+            }
+
+            .empty-icon {
+                font-size: 3rem;
+                opacity: 0.3;
+                margin-bottom: 16px;
+            }
+
+            /* Theme Toggle Button */
+            .theme-toggle {
+                position: fixed;
+                bottom: 30px;
+                right: 30px;
+                width: 56px;
+                height: 56px;
+                border-radius: 50%;
+                background: linear-gradient(135deg, var(--primary), var(--secondary));
+                border: none;
+                cursor: pointer;
+                box-shadow: 0 8px 16px var(--shadow);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 24px;
+                transition: all 0.3s ease;
+                z-index: 1000;
+            }
+
+            .theme-toggle:hover {
+                transform: scale(1.1) rotate(15deg);
+                box-shadow: 0 12px 24px var(--shadow);
+            }
+
+            .theme-toggle:active {
+                transform: scale(0.95);
+            }
+
+            @media (max-width: 640px) {
+                .list-title {
+                    font-size: 1.5rem;
+                }
+
+                .input-group {
+                    flex-direction: column;
+                }
+
+                .btn {
+                    width: 100%;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <button class="back-btn" onclick="goBack()">← 返回列表</button>
+                <div class="list-info">
+                    <div class="list-title" id="listTitle">加载中...</div>
+                    <div class="list-subtitle" id="listSubtitle"></div>
+                    <div class="list-stats" id="listStats"></div>
+                </div>
+            </div>
+
+            <div class="add-section">
+                <div class="input-group">
+                    <input
+                        type="text"
+                        id="itemInput"
+                        placeholder="输入新任务，例如：买牛奶、完成报告..."
+                        onkeypress="if(event.key==='Enter') addItem()"
+                    />
+                    <button class="btn" onclick="addItem()">➕ 添加任务</button>
+                </div>
+            </div>
+
+            <div class="items-section">
+                <div class="section-title">📝 任务列表</div>
+                <ul class="tech-list" id="itemsList"></ul>
+                <div class="empty-state" id="emptyState" style="display: none">
+                    <div class="empty-icon">✨</div>
+                    <h3>还没有任务</h3>
+                    <p>添加第一个任务开始吧！</p>
+                </div>
+            </div>
+        </div>
+
+        <button class="theme-toggle" onclick="toggleTheme()" id="themeToggle" aria-label="切换主题">
+            🌙
+        </button>
+
+        <script>
+            let lists = [];
+            let currentListId = null;
+
+            // Theme Management
+            function initTheme() {
+                const savedTheme = localStorage.getItem('theme') || 'dark';
+                applyTheme(savedTheme);
+            }
+
+            function toggleTheme() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                applyTheme(newTheme);
+                localStorage.setItem('theme', newTheme);
+            }
+
+            function applyTheme(theme) {
+                if (theme === 'light') {
+                    document.documentElement.setAttribute('data-theme', 'light');
+                    document.getElementById('themeToggle').textContent = '☀️';
+                } else {
+                    document.documentElement.removeAttribute('data-theme');
+                    document.getElementById('themeToggle').textContent = '🌙';
+                }
+            }
+
+            function init() {
+                initTheme();
+                const params = new URLSearchParams(window.location.search);
+                currentListId = parseInt(params.get("id"));
+
+                if (!currentListId) {
+                    alert("清单不存在！");
+                    goBack();
+                    return;
+                }
+
+                const stored = localStorage.getItem("todoLists");
+                if (stored) {
+                    lists = JSON.parse(stored);
+                }
+
+                renderDetail();
+            }
+
+            function saveLists() {
+                localStorage.setItem("todoLists", JSON.stringify(lists));
+            }
+
+            function getCurrentList() {
+                return lists.find((l) => l.id === currentListId);
+            }
+
+            function goBack() {
+                window.location.href = "index.html";
+            }
+
+            function addItem() {
+                const input = document.getElementById("itemInput");
+                const text = input.value.trim();
+
+                if (!text) {
+                    alert("请输入任务内容！");
+                    return;
+                }
+
+                const list = getCurrentList();
+                if (!list) return;
+
+                const newItem = {
+                    id: Date.now(),
+                    text: text,
+                    completed: false,
+                    createdAt: new Date().toISOString(),
+                };
+
+                list.items.push(newItem);
+                saveLists();
+                renderDetail();
+                input.value = "";
+            }
+
+            function toggleItem(itemId) {
+                const list = getCurrentList();
+                if (!list) return;
+
+                const item = list.items.find((i) => i.id === itemId);
+                if (item) {
+                    item.completed = !item.completed;
+                    saveLists();
+                    renderDetail();
+                }
+            }
+
+            function deleteItem(itemId, event) {
+                event.stopPropagation();
+                const list = getCurrentList();
+                if (!list) return;
+
+                list.items = list.items.filter((i) => i.id !== itemId);
+                saveLists();
+                renderDetail();
+            }
+
+            function editItem(itemId, event) {
+                event.stopPropagation();
+
+                // 隐藏所有正在编辑的输入框
+                document.querySelectorAll('.edit-input').forEach(input => {
+                    const span = input.previousElementSibling;
+                    if (span) {
+                        span.classList.remove('editing');
+                    }
+                    input.remove();
+                });
+
+                const span = event.target;
+                const currentText = span.textContent;
+
+                // 创建输入框
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.className = 'edit-input';
+                input.value = currentText;
+
+                // 插入输入框
+                span.classList.add('editing');
+                span.parentNode.insertBefore(input, span.nextSibling);
+
+                // 聚焦并选中文字
+                input.focus();
+                input.select();
+
+                // 保存编辑
+                const saveEdit = () => {
+                    const newText = input.value.trim();
+                    if (newText && newText !== currentText) {
+                        const list = getCurrentList();
+                        const item = list.items.find((i) => i.id === itemId);
+                        if (item) {
+                            item.text = newText;
+                            saveLists();
+                        }
+                    }
+                    renderDetail();
+                };
+
+                // 取消编辑
+                const cancelEdit = () => {
+                    renderDetail();
+                };
+
+                // 事件监听
+                input.addEventListener('blur', saveEdit);
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        saveEdit();
+                    } else if (e.key === 'Escape') {
+                        e.preventDefault();
+                        cancelEdit();
+                    }
+                });
+            }
+
+            // 拖拽相关变量
+            let draggedItemId = null;
+
+            function handleDragStart(itemId, event) {
+                draggedItemId = itemId;
+                event.target.classList.add('dragging');
+                event.dataTransfer.effectAllowed = 'move';
+                event.dataTransfer.setData('text/html', event.target.innerHTML);
+            }
+
+            function handleDragOver(event) {
+                event.preventDefault();
+                event.dataTransfer.dropEffect = 'move';
+
+                const item = event.target.closest('.tech-item');
+                if (item && !item.classList.contains('dragging')) {
+                    item.classList.add('drag-over');
+                }
+                return false;
+            }
+
+            function handleDragLeave(event) {
+                const item = event.target.closest('.tech-item');
+                if (item) {
+                    item.classList.remove('drag-over');
+                }
+            }
+
+            function handleDrop(targetItemId, event) {
+                event.stopPropagation();
+                event.preventDefault();
+
+                if (draggedItemId === targetItemId) {
+                    return false;
+                }
+
+                const list = getCurrentList();
+                if (!list) return false;
+
+                // 找到拖拽项和目标项的索引
+                const draggedIndex = list.items.findIndex(i => i.id === draggedItemId);
+                const targetIndex = list.items.findIndex(i => i.id === targetItemId);
+
+                if (draggedIndex === -1 || targetIndex === -1) return false;
+
+                // 移动数组中的项
+                const draggedItem = list.items[draggedIndex];
+                list.items.splice(draggedIndex, 1);
+                list.items.splice(targetIndex, 0, draggedItem);
+
+                saveLists();
+                renderDetail();
+
+                return false;
+            }
+
+            function handleDragEnd(event) {
+                event.target.classList.remove('dragging');
+                document.querySelectorAll('.tech-item').forEach(item => {
+                    item.classList.remove('drag-over');
+                });
+                draggedItemId = null;
+            }
+
+            function renderDetail() {
+                const list = getCurrentList();
+
+                if (!list) {
+                    alert("清单不存在！");
+                    goBack();
+                    return;
+                }
+
+                document.getElementById("listTitle").textContent = list.title;
+                document.getElementById("listSubtitle").textContent =
+                    list.subtitle || "无描述";
+
+                const total = list.items.length;
+                const completed = list.items.filter((i) => i.completed).length;
+                document.getElementById("listStats").innerHTML = `
+                <span>📊 共 ${total} 个任务</span>
+                <span>✅ 已完成 ${completed} 个</span>
+                <span>📅 创建于 ${formatDate(list.createdAt)}</span>
+            `;
+
+                const itemsList = document.getElementById("itemsList");
+                const emptyState = document.getElementById("emptyState");
+
+                if (list.items.length === 0) {
+                    itemsList.style.display = "none";
+                    emptyState.style.display = "block";
+                    return;
+                }
+
+                itemsList.style.display = "block";
+                emptyState.style.display = "none";
+
+                itemsList.innerHTML = list.items
+                    .map(
+                        (item) => `
+                <li class="tech-item ${item.completed ? "completed" : ""}"
+                    draggable="true"
+                    ondragstart="handleDragStart(${item.id}, event)"
+                    ondragover="handleDragOver(event)"
+                    ondragleave="handleDragLeave(event)"
+                    ondrop="handleDrop(${item.id}, event)"
+                    ondragend="handleDragEnd(event)">
+                    <div class="checkbox-wrapper">
+                        <input
+                            type="checkbox"
+                            class="checkbox"
+                            ${item.completed ? "checked" : ""}
+                            onchange="toggleItem(${item.id})"
+                        >
+                    </div>
+                    <span class="drag-handle" title="拖动排序">☰</span>
+                    <span class="tech-name" ondblclick="editItem(${item.id}, event)" title="双击编辑">${escapeHtml(item.text)}</span>
+                    <button class="delete-item-btn" onclick="deleteItem(${item.id}, event)">
+                        🗑️ 删除
+                    </button>
+                </li>
+            `,
+                    )
+                    .join("");
+            }
+
+            function escapeHtml(text) {
+                const div = document.createElement("div");
+                div.textContent = text;
+                return div.innerHTML;
+            }
+
+            function formatDate(isoString) {
+                const date = new Date(isoString);
+                return date.toLocaleDateString("zh-CN", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                });
+            }
+
+            init();
+        </script>
+    </body>
+</html>

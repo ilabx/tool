@@ -1,0 +1,535 @@
+<!doctype html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Todo Lists</title>
+        <style>
+            :root {
+                --bg-dark: #020617;
+                --card-bg: #0f172a;
+                --card-bg-secondary: rgba(15, 23, 42, 0.6);
+                --input-bg: rgba(30, 41, 59, 0.5);
+                --card-border: #1e293b;
+                --primary: #38bdf8;
+                --secondary: #6366f1;
+                --accent: #10b981;
+                --text-main: #f8fafc;
+                --text-muted: #94a3b8;
+                --danger: #ef4444;
+                --icon-bg: rgba(56, 189, 248, 0.1);
+                --delete-btn-bg: rgba(239, 68, 68, 0.1);
+                --shadow: rgba(0, 0, 0, 0.2);
+            }
+
+            [data-theme="light"] {
+                --bg-dark: #e0f2fe;
+                --card-bg: #ffffff;
+                --card-bg-secondary: rgba(255, 255, 255, 0.95);
+                --input-bg: #f0f9ff;
+                --card-border: #bae6fd;
+                --primary: #0284c7;
+                --secondary: #0ea5e9;
+                --accent: #06b6d4;
+                --text-main: #0c4a6e;
+                --text-muted: #475569;
+                --danger: #dc2626;
+                --icon-bg: rgba(2, 132, 199, 0.1);
+                --delete-btn-bg: rgba(220, 38, 38, 0.1);
+                --shadow: rgba(2, 132, 199, 0.15);
+            }
+
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+
+            body {
+                font-family:
+                    "Inter",
+                    -apple-system,
+                    sans-serif;
+                background-color: var(--bg-dark);
+                color: var(--text-main);
+                line-height: 1.5;
+                padding: 40px 20px;
+                transition: background-color 0.3s ease, color 0.3s ease;
+            }
+
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+            }
+
+            /* Header */
+            header {
+                text-align: center;
+                margin-bottom: 60px;
+            }
+
+            h1 {
+                font-size: 3.5rem;
+                font-weight: 800;
+                letter-spacing: -2px;
+                background: linear-gradient(
+                    to right,
+                    var(--primary),
+                    var(--secondary)
+                );
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                margin-bottom: 10px;
+            }
+
+            .subtitle {
+                color: var(--text-muted);
+                font-size: 1.2rem;
+                text-transform: uppercase;
+                letter-spacing: 2px;
+            }
+
+            /* Add Section */
+            .add-section {
+                background: var(--card-bg-secondary);
+                border: 1px solid var(--card-border);
+                border-radius: 16px;
+                padding: 30px;
+                backdrop-filter: blur(10px);
+                margin-bottom: 50px;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .add-section::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 4px;
+                background: linear-gradient(
+                    90deg,
+                    var(--accent),
+                    var(--primary)
+                );
+            }
+
+            .form-group {
+                margin-bottom: 20px;
+            }
+
+            label {
+                display: block;
+                margin-bottom: 8px;
+                color: var(--text-muted);
+                font-size: 0.9rem;
+                font-weight: 600;
+            }
+
+            input[type="text"] {
+                width: 100%;
+                background: var(--input-bg);
+                border: 1px solid var(--card-border);
+                border-radius: 8px;
+                padding: 12px 16px;
+                color: var(--text-main);
+                font-size: 1rem;
+                transition: border-color 0.3s ease;
+            }
+
+            input[type="text"]:focus {
+                outline: none;
+                border-color: var(--primary);
+            }
+
+            .btn {
+                background: linear-gradient(
+                    135deg,
+                    var(--primary),
+                    var(--secondary)
+                );
+                color: white;
+                border: none;
+                border-radius: 8px;
+                padding: 12px 24px;
+                font-size: 1rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition:
+                    transform 0.2s ease,
+                    box-shadow 0.2s ease;
+            }
+
+            .btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 20px -10px rgba(56, 189, 248, 0.4);
+            }
+
+            /* Grid */
+            .tech-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+                gap: 30px;
+                margin-bottom: 50px;
+            }
+
+            /* Card */
+            .card {
+                background: var(--card-bg-secondary);
+                border: 1px solid var(--card-border);
+                border-radius: 16px;
+                padding: 30px;
+                backdrop-filter: blur(10px);
+                transition:
+                    transform 0.3s ease,
+                    border-color 0.3s ease;
+                position: relative;
+                overflow: hidden;
+                cursor: pointer;
+                animation: fadeIn 0.3s ease;
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .card:hover {
+                transform: translateY(-5px);
+                border-color: var(--primary);
+                box-shadow: 0 10px 30px -10px rgba(56, 189, 248, 0.2);
+            }
+
+            .card::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 4px;
+                background: linear-gradient(
+                    90deg,
+                    var(--primary),
+                    var(--secondary)
+                );
+            }
+
+            .card-header {
+                display: flex;
+                align-items: center;
+                margin-bottom: 25px;
+            }
+
+            .icon-box {
+                width: 48px;
+                height: 48px;
+                background: var(--icon-bg);
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-right: 15px;
+                color: var(--primary);
+                font-size: 24px;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+                font-weight: 700;
+            }
+
+            .card-subtitle {
+                font-size: 1rem;
+                color: var(--text-muted);
+                margin-top: 8px;
+                margin-bottom: 20px;
+            }
+
+            .card-stats {
+                display: flex;
+                justify-content: space-between;
+                padding-top: 20px;
+                border-top: 1px solid var(--card-border);
+                font-size: 0.9rem;
+                color: var(--text-muted);
+            }
+
+            .stat-item {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            }
+
+            .delete-btn {
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                background: var(--delete-btn-bg);
+                color: var(--danger);
+                border: none;
+                padding: 8px 12px;
+                border-radius: 8px;
+                cursor: pointer;
+                font-size: 0.875rem;
+                transition: all 0.2s ease;
+                z-index: 10;
+            }
+
+            .delete-btn:hover {
+                background: var(--danger);
+                color: white;
+            }
+
+            .empty-state {
+                text-align: center;
+                padding: 60px 20px;
+                color: var(--text-muted);
+            }
+
+            .empty-state svg {
+                width: 80px;
+                height: 80px;
+                margin-bottom: 20px;
+                opacity: 0.3;
+            }
+
+            /* Theme Toggle Button */
+            .theme-toggle {
+                position: fixed;
+                bottom: 30px;
+                right: 30px;
+                width: 56px;
+                height: 56px;
+                border-radius: 50%;
+                background: linear-gradient(135deg, var(--primary), var(--secondary));
+                border: none;
+                cursor: pointer;
+                box-shadow: 0 8px 16px var(--shadow);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 24px;
+                transition: all 0.3s ease;
+                z-index: 1000;
+            }
+
+            .theme-toggle:hover {
+                transform: scale(1.1) rotate(15deg);
+                box-shadow: 0 12px 24px var(--shadow);
+            }
+
+            .theme-toggle:active {
+                transform: scale(0.95);
+            }
+
+            @media (max-width: 768px) {
+                h1 {
+                    font-size: 2.5rem;
+                }
+                .tech-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <header>
+                <h1>📝 TODO</h1>
+                <div class="subtitle">我的待办清单</div>
+            </header>
+
+            <div class="add-section">
+                <div class="form-group">
+                    <label for="listTitle">标题</label>
+                    <input
+                        type="text"
+                        id="listTitle"
+                        placeholder="例如：工作任务、购物清单..."
+                    />
+                </div>
+                <div class="form-group">
+                    <label for="listSubtitle">描述</label>
+                    <input
+                        type="text"
+                        id="listSubtitle"
+                        placeholder="例如：本周需要完成的工作项目..."
+                    />
+                </div>
+                <button class="btn" onclick="addList()">➕ 创建清单</button>
+            </div>
+
+            <div class="tech-grid" id="todoGrid"></div>
+
+            <div class="empty-state" id="emptyState" style="display: none">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="80"
+                    height="80"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                >
+                    <path d="M9 11l3 3L22 4"></path>
+                    <path
+                        d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"
+                    ></path>
+                </svg>
+                <h2>暂无清单</h2>
+                <p>创建你的第一个清单开始吧！</p>
+            </div>
+        </div>
+
+        <button class="theme-toggle" onclick="toggleTheme()" id="themeToggle" aria-label="切换主题">
+            🌙
+        </button>
+
+        <script>
+            let lists = [];
+
+            // Theme Management
+            function initTheme() {
+                const savedTheme = localStorage.getItem('theme') || 'dark';
+                applyTheme(savedTheme);
+            }
+
+            function toggleTheme() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                applyTheme(newTheme);
+                localStorage.setItem('theme', newTheme);
+            }
+
+            function applyTheme(theme) {
+                if (theme === 'light') {
+                    document.documentElement.setAttribute('data-theme', 'light');
+                    document.getElementById('themeToggle').textContent = '☀️';
+                } else {
+                    document.documentElement.removeAttribute('data-theme');
+                    document.getElementById('themeToggle').textContent = '🌙';
+                }
+            }
+
+            function init() {
+                initTheme();
+                const stored = localStorage.getItem("todoLists");
+                if (stored) {
+                    lists = JSON.parse(stored);
+                }
+                renderLists();
+            }
+
+            function saveLists() {
+                localStorage.setItem("todoLists", JSON.stringify(lists));
+            }
+
+            function addList() {
+                const title = document.getElementById("listTitle").value.trim();
+                const subtitle = document
+                    .getElementById("listSubtitle")
+                    .value.trim();
+
+                if (!title) {
+                    alert("请输入一级标题！");
+                    return;
+                }
+
+                const newList = {
+                    id: Date.now(),
+                    title: title,
+                    subtitle: subtitle,
+                    items: [],
+                    createdAt: new Date().toISOString(),
+                };
+
+                lists.unshift(newList);
+                saveLists();
+                renderLists();
+
+                document.getElementById("listTitle").value = "";
+                document.getElementById("listSubtitle").value = "";
+            }
+
+            function deleteList(id, event) {
+                event.stopPropagation();
+                if (confirm("确定要删除这个清单吗？")) {
+                    lists = lists.filter((l) => l.id !== id);
+                    saveLists();
+                    renderLists();
+                }
+            }
+
+            function openList(id) {
+                window.location.href = `detail.html?id=${id}`;
+            }
+
+            function renderLists() {
+                const grid = document.getElementById("todoGrid");
+                const emptyState = document.getElementById("emptyState");
+
+                if (lists.length === 0) {
+                    grid.style.display = "none";
+                    emptyState.style.display = "block";
+                    return;
+                }
+
+                grid.style.display = "grid";
+                emptyState.style.display = "none";
+
+                grid.innerHTML = lists
+                    .map((list) => {
+                        const totalItems = list.items.length;
+                        const completedItems = list.items.filter(
+                            (item) => item.completed,
+                        ).length;
+
+                        return `
+                    <div class="card" onclick="openList(${list.id})">
+                        <button class="delete-btn" onclick="deleteList(${list.id}, event)">🗑️</button>
+                        <div class="card-header">
+                            <div class="icon-box">📋</div>
+                            <h2>${escapeHtml(list.title)}</h2>
+                        </div>
+                        <div class="card-subtitle">${escapeHtml(list.subtitle || "无描述")}</div>
+                        <div class="card-stats">
+                            <div class="stat-item">
+                                <span>📊</span>
+                                <span>${completedItems} / ${totalItems} 已完成</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>📅</span>
+                                <span>${formatDate(list.createdAt)}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                    })
+                    .join("");
+            }
+
+            function escapeHtml(text) {
+                const div = document.createElement("div");
+                div.textContent = text;
+                return div.innerHTML;
+            }
+
+            function formatDate(isoString) {
+                const date = new Date(isoString);
+                return date.toLocaleDateString("zh-CN", {
+                    month: "short",
+                    day: "numeric",
+                });
+            }
+
+            init();
+        </script>
+    </body>
+</html>

@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>关于项目 - Tekio工具集</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+
+        :root {
+            --primary-color: #4361ee;
+            --primary-light: #4895ef;
+            --secondary-color: #3f37c9;
+            --dark-color: #1a1a2e;
+            --light-color: #f8f9fa;
+            --gray-color: #6c757d;
+            --border-radius: 12px;
+            --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            color: var(--dark-color);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* 头部导航 */
+        header {
+            background-color: white;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.07);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            background-color: rgba(255, 255, 255, 0.95);
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.7rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .logo i {
+            font-size: 2rem;
+        }
+
+        .logo-text {
+            background: linear-gradient(90deg, var(--primary-color), var(--primary-light));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .back-link:hover {
+            gap: 12px;
+        }
+
+        /* 主内容区 */
+        .page-content {
+            max-width: 800px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, var(--primary-color), var(--primary-light));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .page-subtitle {
+            font-size: 1.2rem;
+            color: var(--gray-color);
+            margin-bottom: 40px;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 40px;
+            box-shadow: var(--box-shadow);
+            margin-bottom: 30px;
+        }
+
+        .content-card h2 {
+            font-size: 1.5rem;
+            color: var(--dark-color);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .content-card h2 i {
+            color: var(--primary-color);
+        }
+
+        .content-card p {
+            color: var(--gray-color);
+            margin-bottom: 15px;
+            line-height: 1.8;
+        }
+
+        .content-card ul {
+            color: var(--gray-color);
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .content-card li {
+            margin-bottom: 10px;
+            line-height: 1.7;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .feature-item {
+            text-align: center;
+            padding: 25px 15px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            border-radius: var(--border-radius);
+        }
+
+        .feature-item i {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .feature-item h3 {
+            font-size: 1.1rem;
+            color: var(--dark-color);
+            margin-bottom: 8px;
+        }
+
+        .feature-item p {
+            font-size: 0.9rem;
+            color: var(--gray-color);
+            margin-bottom: 0;
+        }
+
+        /* 页脚 */
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 40px 0 25px;
+            margin-top: 50px;
+        }
+
+        .footer-simple {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .footer-brand {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: white;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .footer-logo i {
+            color: var(--primary-light);
+        }
+
+        .footer-desc {
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+
+        .footer-nav {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .footer-nav a {
+            color: #ccc;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: var(--transition);
+        }
+
+        .footer-nav a:hover {
+            color: var(--primary-light);
+        }
+
+        .footer-divider {
+            color: #555;
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .content-card {
+                padding: 25px;
+            }
+
+            .footer-simple {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .footer-brand {
+                align-items: center;
+            }
+
+            .footer-nav {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 头部导航 -->
+    <header>
+        <div class="container header-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-tools"></i>
+                <span class="logo-text">Tekio工具集</span>
+            </a>
+            <a href="index.html" class="back-link">
+                <i class="fas fa-arrow-left"></i> 返回首页
+            </a>
+        </div>
+    </header>
+
+    <main class="page-content">
+        <h1 class="page-title">关于项目</h1>
+        <p class="page-subtitle">了解 Tekio工具集 的故事与愿景</p>
+
+        <div class="content-card">
+            <h2><i class="fas fa-lightbulb"></i> 项目初衷</h2>
+            <p>Tekio工具集 诞生于一个简单的想法：为开发者和日常用户提供一个简洁、高效、免费的在线工具平台。</p>
+            <p>在日常工作中，我们经常需要使用各种小工具，比如时间戳转换、JSON格式化、密码生成等。然而，市面上的工具网站往往充斥着广告，加载缓慢，用户体验不佳。</p>
+            <p>因此，我们决定打造一个纯净、快速、专注的工具平台，让每一位用户都能愉快地使用。</p>
+        </div>
+
+        <div class="content-card">
+            <h2><i class="fas fa-star"></i> 核心特点</h2>
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <i class="fas fa-bolt"></i>
+                    <h3>极速加载</h3>
+                    <p>轻量级设计，秒开体验</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-ad"></i>
+                    <h3>无广告干扰</h3>
+                    <p>纯净界面，专注工具</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-lock"></i>
+                    <h3>隐私保护</h3>
+                    <p>本地处理，数据不上传</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-gift"></i>
+                    <h3>完全免费</h3>
+                    <p>所有功能免费使用</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-card">
+            <h2><i class="fas fa-tools"></i> 工具类别</h2>
+            <p>我们目前提供以下类型的在线工具：</p>
+            <ul>
+                <li><strong>开发工具</strong> - JSON格式化、正则测试、密码生成、IP查询等</li>
+                <li><strong>设计工具</strong> - 颜色选择器、二维码生成、图片压缩等</li>
+                <li><strong>文本工具</strong> - Markdown编辑器、文本差异比较等</li>
+                <li><strong>时间工具</strong> - 时间戳转换、时区转换等</li>
+                <li><strong>效率工具</strong> - 待办事项、单位转换器等</li>
+            </ul>
+            <p>我们会持续添加更多实用工具，欢迎提出建议！</p>
+        </div>
+
+        <div class="content-card">
+            <h2><i class="fas fa-heart"></i> 技术栈</h2>
+            <p>Tekio工具集 采用纯前端技术构建，主要使用：</p>
+            <ul>
+                <li>HTML5 / CSS3 / JavaScript (原生)</li>
+                <li>响应式设计，支持各种设备</li>
+                <li>无需后端服务器，数据在本地处理</li>
+                <li>PWA 支持，可离线使用部分功能</li>
+            </ul>
+        </div>
+
+        <div class="content-card">
+            <h2><i class="fas fa-envelope"></i> 联系我们</h2>
+            <p>如果您有任何建议、问题或合作意向，欢迎通过以下方式联系我们：</p>
+            <ul>
+                <li>网站域名：tool.tekio.cn</li>
+                <li>反馈问题：请通过页面底部的「反馈问题」链接提交</li>
+            </ul>
+            <p>感谢您使用 Tekio工具集！</p>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+            <div class="footer-simple">
+                <div class="footer-brand">
+                    <a href="index.html" class="footer-logo">
+                        <i class="fas fa-tools"></i>
+                        <span>Tekio工具集</span>
+                    </a>
+                    <p class="footer-desc">高效便捷的在线工具平台，免费使用，无需安装</p>
+                </div>
+                <div class="footer-nav">
+                    <a href="about.html">关于项目</a>
+                    <span class="footer-divider">|</span>
+                    <a href="terms.html">使用条款</a>
+                    <span class="footer-divider">|</span>
+                    <a href="#">反馈问题</a>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 tool.tekio.cn 版权所有</p>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>
