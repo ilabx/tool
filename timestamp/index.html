@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>时间戳转换工具 - 现代化在线工具</title>
+    <title>timestamp - 时间戳(Unix timestamp)转换工具 - 现代化在线工具</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- 公共样式 -->
     <link rel="stylesheet" href="../components/shared-styles.css">
@@ -208,16 +208,19 @@
         }
         
         .current-timestamp {
-            font-size: 2rem;
+            font-size: 1.6rem;
             font-weight: 700;
             color: var(--primary-color);
             text-align: center;
-            padding: 15px;
+            padding: 12px 15px;
             background-color: rgba(67, 97, 238, 0.05);
             border-radius: var(--border-radius);
-            flex: 1;
-            min-width: 0;
-            word-break: break-all;
+            flex: 0 0 auto;
+            min-width: 180px;
+            max-width: 220px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
         
         .copy-btn {
@@ -280,17 +283,20 @@
         
         @media (max-width: 768px) {
             .timestamp-display-container {
-                flex-direction: column;
+                flex-direction: row;
+                flex-wrap: wrap;
                 gap: 10px;
-            }
-            
-            .current-timestamp {
-                width: 100%;
-            }
-            
-            .copy-btn {
-                width: 100%;
                 justify-content: center;
+            }
+
+            .current-timestamp {
+                min-width: 150px;
+                max-width: 180px;
+                font-size: 1.4rem;
+            }
+
+            .copy-btn {
+                flex: 0 0 auto;
             }
         }
         
@@ -387,6 +393,36 @@
 
         .btn-delete:hover {
             background-color: #ff5252;
+        }
+
+        /* 固定结果显示区域 */
+        .result-display {
+            flex: 2;
+            min-width: 160px;
+            padding: 8px 10px;
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: var(--border-radius);
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.85rem;
+            color: var(--dark-color);
+            min-height: 38px;
+            display: flex;
+            align-items: center;
+            word-break: break-all;
+        }
+
+        .result-display:empty::before {
+            content: '结果';
+            color: #adb5bd;
+            font-size: 0.85rem;
+        }
+
+        .result-display.has-result {
+            background-color: rgba(67, 97, 238, 0.05);
+            border-color: var(--primary-light);
+            color: var(--primary-color);
+            font-weight: 500;
         }
         
         /* 结果表格 */
@@ -634,6 +670,7 @@
                         <button class="btn-convert" id="convertTimestampBtn">
                             <i class="fas fa-sync-alt"></i> 转换
                         </button>
+                        <div class="result-display" id="timestampResult"></div>
                         <button class="btn-delete" id="clearTimestampBtn">
                             <i class="fas fa-trash"></i> 清除
                         </button>
@@ -664,6 +701,7 @@
                         <button class="btn-convert" id="convertDatetimeBtn">
                             <i class="fas fa-sync-alt"></i> 转换
                         </button>
+                        <div class="result-display" id="datetimeResult"></div>
                         <button class="btn-delete" id="clearDatetimeBtn">
                             <i class="fas fa-trash"></i> 清除
                         </button>
@@ -925,6 +963,7 @@
             const timestampInput = document.getElementById('timestampInput').value.trim();
             const timezoneSelect = document.getElementById('timezoneSelect').value;
             const outputUnit = document.getElementById('timestampOutputUnitSelect').value;
+            const resultDisplay = document.getElementById('timestampResult');
 
             if (!timestampInput || isNaN(timestampInput)) {
                 alert('请输入有效的时间戳（数字）');
@@ -965,7 +1004,11 @@
 
             const displayTimestamp = isMs ? `${timestamp} (ms)` : `${timestamp} (s)`;
 
-            // 添加到结果表格
+            // 显示在固定结果区域
+            resultDisplay.textContent = formattedDate;
+            resultDisplay.classList.add('has-result');
+
+            // 添加到历史记录表格
             const tableBody = document.getElementById('conversionResults');
             const newRow = document.createElement('tr');
             newRow.innerHTML = `
@@ -977,9 +1020,6 @@
                 </td>
             `;
             tableBody.appendChild(newRow);
-
-            // 清空输入
-            document.getElementById('timestampInput').value = '';
         });
         
         // 日期时间转换为时间戳
@@ -987,6 +1027,7 @@
             const datetimeInput = document.getElementById('datetimeInput').value.trim();
             const timezoneSelect = document.getElementById('datetimeTimezoneSelect').value;
             const outputUnit = document.getElementById('outputUnitSelect').value;
+            const resultDisplay = document.getElementById('datetimeResult');
 
             if (!datetimeInput) {
                 alert('请输入日期时间');
@@ -1004,21 +1045,28 @@
 
             const [, year, month, day, hour, minute, second, millisecond] = match;
             const ms = millisecond ? parseInt(millisecond.padEnd(3, '0')) : 0;
-            let date = new Date(year, month - 1, day, hour, minute, second, ms);
 
-            // 简单模拟时区转换（实际项目中应使用更复杂的时区库）
-            let timezoneOffset = 0;
-            if (timezoneSelect === 'Asia/Shanghai') timezoneOffset = 8 * 60;
-            else if (timezoneSelect === 'America/New_York') timezoneOffset = -5 * 60;
-            else if (timezoneSelect === 'Asia/Tokyo') timezoneOffset = 9 * 60;
+            // 使用 Date.UTC 创建 UTC 时间，然后减去目标时区的偏移量
+            const utcTime = Date.UTC(year, month - 1, day, hour, minute, second, ms);
 
-            const adjustedDate = new Date(date.getTime() - (timezoneOffset - date.getTimezoneOffset()) * 60000);
+            // 时区偏移量（分钟），表示目标时区相对于 UTC 的偏移
+            let timezoneOffsetMinutes = 0;
+            if (timezoneSelect === 'Asia/Shanghai') timezoneOffsetMinutes = 8 * 60;
+            else if (timezoneSelect === 'America/New_York') timezoneOffsetMinutes = -5 * 60;
+            else if (timezoneSelect === 'Europe/London') timezoneOffsetMinutes = 0;
+            else if (timezoneSelect === 'Asia/Tokyo') timezoneOffsetMinutes = 9 * 60;
+            // UTC 时区偏移为 0
 
-            const timestampMs = adjustedDate.getTime();
+            // 用户输入的是目标时区的本地时间，需要减去时区偏移得到 UTC 时间戳
+            const timestampMs = utcTime - timezoneOffsetMinutes * 60000;
             const timestamp = outputUnit === 'milliseconds' ? timestampMs : Math.floor(timestampMs / 1000);
             const displayTimestamp = outputUnit === 'milliseconds' ? `${timestamp} (ms)` : `${timestamp} (s)`;
 
-            // 添加到结果表格
+            // 显示在固定结果区域
+            resultDisplay.textContent = displayTimestamp;
+            resultDisplay.classList.add('has-result');
+
+            // 添加到历史记录表格
             const tableBody = document.getElementById('conversionResults');
             const newRow = document.createElement('tr');
             newRow.innerHTML = `
@@ -1030,19 +1078,22 @@
                 </td>
             `;
             tableBody.appendChild(newRow);
-
-            // 清空输入
-            document.getElementById('datetimeInput').value = '';
         });
         
         // 清除时间戳输入
         document.getElementById('clearTimestampBtn').addEventListener('click', function() {
             document.getElementById('timestampInput').value = '';
+            const resultDisplay = document.getElementById('timestampResult');
+            resultDisplay.textContent = '';
+            resultDisplay.classList.remove('has-result');
         });
-        
+
         // 清除日期时间输入
         document.getElementById('clearDatetimeBtn').addEventListener('click', function() {
             document.getElementById('datetimeInput').value = '';
+            const resultDisplay = document.getElementById('datetimeResult');
+            resultDisplay.textContent = '';
+            resultDisplay.classList.remove('has-result');
         });
         
         // 保存功能模拟
