@@ -5,7 +5,7 @@
     "description": "Unix时间戳与日期时间格式相互转换，支持多种时区，实时显示当前时间戳。",
     "icon": "fas fa-clock",
     "iconColor": "#4361ee",
-    "link": "timestamp.html",
+    "link": "/timestamp",
     "tags": ["时间", "开发", "转换"],
     "category": "time"
   },
@@ -15,7 +15,7 @@
     "description": "简洁高效的待办事项管理工具，支持任务分类、优先级设置和完成统计。",
     "icon": "fas fa-tasks",
     "iconColor": "#4cc9f0",
-    "link": "todo.html",
+    "link": "/todo",
     "tags": ["效率", "管理", "任务"],
     "category": "productivity"
   },
@@ -25,7 +25,7 @@
     "description": "JSON数据格式化、验证和压缩工具，支持语法高亮和错误提示。",
     "icon": "fas fa-code",
     "iconColor": "#ff9e00",
-    "link": "json-formatter.html",
+    "link": "https://www.bejson.com/json/format/",
     "tags": ["开发", "数据", "格式化"],
     "category": "development"
   },
@@ -35,7 +35,7 @@
     "description": "强大的颜色选择器，支持多种颜色格式，提供调色板和颜色方案生成。",
     "icon": "fas fa-palette",
     "iconColor": "#ff6b6b",
-    "link": "color-picker.html",
+    "link": "https://www.materialpalette.com/colors",
     "tags": ["设计", "颜色", "调色板"],
     "category": "design"
   },
@@ -45,27 +45,27 @@
     "description": "生成高强度随机密码，支持自定义长度和字符类型，确保账户安全。",
     "icon": "fas fa-key",
     "iconColor": "#3f37c9",
-    "link": "password-generator.html",
+    "link": "https://www.lddgo.net/string/randompassword",
     "tags": ["安全", "工具", "生成"],
     "category": "development"
   },
   {
     "id": 6,
-    "name": "二维码生成器",
-    "description": "快速生成二维码，支持文本、URL、联系方式等多种格式，可自定义样式。",
+    "name": "rabtab查询器",
+    "description": "cron定时表达式快速简易编辑器。",
     "icon": "fas fa-qrcode",
     "iconColor": "#4895ef",
-    "link": "qr-generator.html",
-    "tags": ["工具", "生成", "分享"],
-    "category": "design"
+    "link": "https://crontab.guru/",
+    "tags": ["工具", "查询"],
+    "category": "development"
   },
   {
     "id": 7,
     "name": "Markdown编辑器",
-    "description": "在线Markdown编辑器，实时预览，支持导出HTML和PDF格式。",
+    "description": "在线Markdown编辑器，实时预览。",
     "icon": "fas fa-markdown",
     "iconColor": "#06d6a0",
-    "link": "markdown-editor.html",
+    "link": "https://doocs.github.io/md/",
     "tags": ["文本", "编辑", "写作"],
     "category": "text"
   },
@@ -75,7 +75,7 @@
     "description": "长度、重量、温度、速度等多种单位之间的快速转换工具。",
     "icon": "fas fa-ruler-combined",
     "iconColor": "#7209b7",
-    "link": "unit-converter.html",
+    "link": "https://jsq.luomashu.com/unit-converter.html#",
     "tags": ["工具", "转换", "计算"],
     "category": "productivity"
   },
@@ -85,7 +85,7 @@
     "description": "在线图片压缩工具，减小图片文件大小，保持视觉质量基本不变。",
     "icon": "fas fa-compress-alt",
     "iconColor": "#f72585",
-    "link": "image-compressor.html",
+    "link": "https://tinypng.com/",
     "tags": ["图片", "优化", "工具"],
     "category": "design"
   },
@@ -95,7 +95,7 @@
     "description": "比较两个文本之间的差异，高亮显示增加、删除和修改的内容。",
     "icon": "fas fa-file-alt",
     "iconColor": "#0077b6",
-    "link": "text-diff.html",
+    "link": "https://diff.xuecan.net/",
     "tags": ["文本", "比较", "工具"],
     "category": "text"
   },
@@ -105,7 +105,7 @@
     "description": "查询IP地址的地理位置信息，包括国家、城市、ISP和经纬度等。",
     "icon": "fas fa-globe",
     "iconColor": "#2a9d8f",
-    "link": "ip-lookup.html",
+    "link": "https://www.ip138.com/",
     "tags": ["网络", "工具", "查询"],
     "category": "development"
   },
@@ -115,7 +115,7 @@
     "description": "在线正则表达式测试工具，实时匹配高亮，支持常用正则表达式示例。",
     "icon": "fas fa-terminal",
     "iconColor": "#e76f51",
-    "link": "regex-tester.html",
+    "link": "https://www.jyshare.com/front-end/854/",
     "tags": ["开发", "测试", "正则"],
     "category": "development"
   }
