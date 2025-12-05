@@ -585,10 +585,10 @@
                     <li><a href="#about">关于</a></li>
                 </ul>
             </nav>
-            <div class="user-actions">
+            <!-- <div class="user-actions">
                 <button class="btn-login">登录</button>
                 <button class="btn-register">注册</button>
-            </div>
+            </div> -->
         </div>
     </header>
 
@@ -633,7 +633,7 @@
             <div class="featured-content">
                 <h2>时间戳转换工具</h2>
                 <p>快速在Unix时间戳和人类可读日期格式之间相互转换，支持多种时区设置，实时显示当前时间戳，是开发者和IT工作者的必备工具。</p>
-                <a href="timestamp.html" class="featured-link">
+                <a href="/timestamp" class="featured-link" target="_blank">
                     立即使用 <i class="fas fa-arrow-right"></i>
                 </a>
             </div>
@@ -694,7 +694,7 @@
                     <div class="tool-tags">
                         ${tagsHTML}
                     </div>
-                    <a href="${tool.link}" class="tool-link">
+                    <a href="${tool.link}" class="tool-link" target="_blank">
                         立即使用 <i class="fas fa-arrow-right"></i>
                     </a>
                 `;
@@ -818,13 +818,13 @@
         });
 
         // 模拟登录/注册功能
-        document.querySelector('.btn-login').addEventListener('click', function () {
-            alert('登录功能即将推出！');
-        });
+        // document.querySelector('.btn-login').addEventListener('click', function () {
+        //     alert('登录功能即将推出！');
+        // });
 
-        document.querySelector('.btn-register').addEventListener('click', function () {
-            alert('注册功能即将推出！');
-        });
+        // document.querySelector('.btn-register').addEventListener('click', function () {
+        //     alert('注册功能即将推出！');
+        // });
 
         // 平滑滚动到锚点
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
