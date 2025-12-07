@@ -647,7 +647,7 @@
                     <div class="converter-row">
                         <div class="input-group input-main">
                             <label>时间戳转换为日期时间</label>
-                            <input type="text" id="timestampInput" placeholder="输入Unix时间戳 (秒或毫秒)" value="1764603845">
+                            <input type="text" id="timestampInput" placeholder="输入Unix时间戳 (秒或毫秒)" value="">
                         </div>
                         <div class="input-group">
                             <label>时区</label>
@@ -679,7 +679,7 @@
                     <div class="converter-row">
                         <div class="input-group input-main">
                             <label>日期时间转换为时间戳</label>
-                            <input type="text" id="datetimeInput" placeholder="YYYY-MM-DD HH:mm:ss[.SSS]" value="2025-12-04 23:43:58">
+                            <input type="text" id="datetimeInput" placeholder="YYYY-MM-DD HH:mm:ss[.SSS]" value="">
                         </div>
                         <div class="input-group">
                             <label>时区</label>
@@ -939,6 +939,17 @@
             // 生成默认结果
             generateDefaultResults();
 
+            // 设置输入框的默认值为当前时间
+            const now = new Date();
+            const timestampS = Math.floor(now.getTime() / 1000);
+            const dateTimeStr = formatDateTime(now, false);
+            
+            // 设置时间戳输入框的值为当前时间戳（秒）
+            document.getElementById('timestampInput').value = timestampS;
+            
+            // 设置日期时间输入框的值为当前日期时间
+            document.getElementById('datetimeInput').value = dateTimeStr;
+
             // 每秒钟更新一次
             setInterval(updateCurrentTimestamp, 1000);
 
@@ -979,24 +990,27 @@
                 isMs = outputUnit === 'milliseconds';
             }
             const timestampMs = isMs ? timestamp : timestamp * 1000;
-            const date = new Date(timestampMs);
+            
+            // 获取时区偏移（分钟）
+            let timezoneOffsetMinutes = 0;
+            if (timezoneSelect === 'Asia/Shanghai') timezoneOffsetMinutes = 8 * 60;
+            else if (timezoneSelect === 'America/New_York') timezoneOffsetMinutes = -5 * 60;
+            else if (timezoneSelect === 'Europe/London') timezoneOffsetMinutes = 0;
+            else if (timezoneSelect === 'Asia/Tokyo') timezoneOffsetMinutes = 9 * 60;
+            // UTC 时区偏移为 0
 
-            // 简单模拟时区转换（实际项目中应使用更复杂的时区库）
-            let timezoneOffset = 0;
-            if (timezoneSelect === 'Asia/Shanghai') timezoneOffset = 8 * 60;
-            else if (timezoneSelect === 'America/New_York') timezoneOffset = -5 * 60;
-            else if (timezoneSelect === 'Asia/Tokyo') timezoneOffset = 9 * 60;
-
-            const adjustedDate = new Date(date.getTime() + (timezoneOffset - date.getTimezoneOffset()) * 60000);
+            // 时间戳是UTC时间，直接加上时区偏移得到目标时区的时间
+            const targetTime = timestampMs + timezoneOffsetMinutes * 60000;
+            const date = new Date(targetTime);
 
             // 格式化日期，包含毫秒
-            const year = adjustedDate.getUTCFullYear();
-            const month = String(adjustedDate.getUTCMonth() + 1).padStart(2, '0');
-            const day = String(adjustedDate.getUTCDate()).padStart(2, '0');
-            const hours = String(adjustedDate.getUTCHours()).padStart(2, '0');
-            const minutes = String(adjustedDate.getUTCMinutes()).padStart(2, '0');
-            const seconds = String(adjustedDate.getUTCSeconds()).padStart(2, '0');
-            const ms = String(adjustedDate.getUTCMilliseconds()).padStart(3, '0');
+            const year = date.getUTCFullYear();
+            const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+            const day = String(date.getUTCDate()).padStart(2, '0');
+            const hours = String(date.getUTCHours()).padStart(2, '0');
+            const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+            const seconds = String(date.getUTCSeconds()).padStart(2, '0');
+            const ms = String(date.getUTCMilliseconds()).padStart(3, '0');
 
             const formattedDate = isMs
                 ? `${year}-${month}-${day} ${hours}:${minutes}:${seconds}.${ms}`
